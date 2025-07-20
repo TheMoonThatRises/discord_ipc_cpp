@@ -45,8 +45,8 @@ bool SocketClient::connect() {
   }
 
   int ret = ::connect(_client_socket,
-                      reinterpret_cast<const struct sockaddr*>(&_server_addr),
-                      sizeof(struct sockaddr_un));
+                      reinterpret_cast<const sockaddr*>(&_server_addr),
+                      sizeof(sockaddr_un));
 
   return ret != -1;
 }
