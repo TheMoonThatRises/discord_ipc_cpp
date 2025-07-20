@@ -15,41 +15,26 @@
 
 #include "discord_ipc_cpp/socket_client.hpp"
 #include "discord_ipc_cpp/json.hpp"
-
-using discord_ipc_cpp::websockets::SocketClient;
-using discord_ipc_cpp::json::JSON;
+#include "discord_ipc_cpp/ipc_types.hpp"
 
 namespace discord_ipc_cpp {
-enum IPCOpcodes : int {
-  handshake = 0,
-  frame = 1,
-  close = 2,
-  ping = 3,
-  pong = 4
-};
-
-struct IPCPayload {
-  const IPCOpcodes opcode;
-  const JSON payload;
-};
-
 class DiscordIPCClient {
  private:
   const pid_t _pid;
   std::string _client_id;
 
-  SocketClient _socket;
+  websockets::SocketClient _socket;
   std::thread _socket_recv_thread;
 
   std::atomic_bool _stop_recv_thread;
 
  private:
-  static std::vector<char> encode_packet(const struct IPCPayload& payload);
+  static std::vector<char> encode_packet(const ipc_types::IPCPayload& payload);
   void recv_thread();
 
  protected:
-  bool send_packet(const struct IPCPayload& payload);
-  std::optional<IPCPayload> recv_packet();
+  bool send_packet(const ipc_types::IPCPayload& payload);
+  std::optional<ipc_types::IPCPayload> recv_packet();
 
  public:
   explicit DiscordIPCClient(const std::string& client_id);

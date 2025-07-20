@@ -23,10 +23,12 @@
 using discord_ipc_cpp::json::JSON;
 using discord_ipc_cpp::json::JSONObject;
 using discord_ipc_cpp::json::Parser;
+using discord_ipc_cpp::ipc_types::IPCOpcodes;
+using discord_ipc_cpp::ipc_types::IPCPayload;
 
 namespace discord_ipc_cpp {
 std::vector<char> DiscordIPCClient::encode_packet(
-  const struct IPCPayload& payload
+  const IPCPayload& payload
 ) {
   std::string data = payload.payload.to_string();
   int data_len = data.size();
@@ -55,7 +57,7 @@ void DiscordIPCClient::recv_thread() {
 
     switch (recv_payload.opcode) {
       case IPCOpcodes::ping:
-        send_packet({ pong, recv_payload.payload });
+        send_packet({ IPCOpcodes::pong, recv_payload.payload });
 
         break;
       case IPCOpcodes::frame: {
@@ -72,7 +74,7 @@ void DiscordIPCClient::recv_thread() {
           });
           activity["nonce"] = JSON(utils::generate_uuid());
 
-          send_packet({ discord_ipc_cpp::IPCOpcodes::frame, activity });
+          send_packet({ IPCOpcodes::frame, activity });
         }
         break;
       }
@@ -98,7 +100,7 @@ DiscordIPCClient::~DiscordIPCClient() {
   close();
 }
 
-bool DiscordIPCClient::send_packet(const struct IPCPayload& payload) {
+bool DiscordIPCClient::send_packet(const IPCPayload& payload) {
   std::vector<char> packet = encode_packet(payload);
 
   return _socket.send_data(packet);
