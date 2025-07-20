@@ -21,6 +21,6 @@ struct IPCPayload {
   const IPCOpcodes opcode;
   const json::JSON payload;
 };
-}  // namespace discord_ipc_cpp:ipc_types
+}  // namespace discord_ipc_cpp::ipc_types
 
 #endif  // DISCORD_IPC_CPP_INCLUDE_DISCORD_IPC_CPP_IPC_TYPES_HPP_
