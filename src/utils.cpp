@@ -9,13 +9,18 @@
 
 #include <map>
 #include <string>
+#include <optional>
 #include <vector>
 #include <random>
 #include <regex>
 
 #include "include/utils.hpp"
+#include "include/internal_ipc_types.hpp"
 
 namespace discord_ipc_cpp::utils {
+typedef internal_ipc_types::CommandRequest::CommandType CommandType;
+typedef internal_ipc_types::CommandRequest::EventType EventType;
+
 const std::map<std::string, std::string> _escape_key {
   {"\\\"", "\""}
 };
@@ -84,17 +89,22 @@ std::string generate_uuid() {
   return uuid;
 }
 
-template<typename A, typename B>
-A reverse_map_search(const std::map<A, B>& map, const B& item) {
+template<typename K, typename V>
+std::optional<K> reverse_map_search(const std::map<K, V>& map, const V& item) {
   for (const auto& [key, value] : map) {
     if (value == item) {
       return key;
     }
   }
 
-  return nullptr;
+  return std::nullopt;
 }
 
 template double generate_random_num(double, double);
 template int generate_random_num(int, int);
+
+template std::optional<CommandType> reverse_map_search(
+  const std::map<CommandType, std::string>&, const std::string& item);
+template std::optional<EventType> reverse_map_search(
+  const std::map<EventType, std::string>&, const std::string& item);
 }  // namespace discord_ipc_cpp::utils

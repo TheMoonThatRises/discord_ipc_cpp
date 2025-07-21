@@ -88,6 +88,13 @@ JSON RichPresence::Secrets::to_json() const {
   return base;
 }
 
+JSON RichPresence::Button::to_json() const {
+  return JSON(JSONObject {
+    { "label", JSON(label) },
+    { "url", JSON(url) }
+  });
+}
+
 JSON RichPresence::to_json() const {
   JSON base(JSONObject {
     { "assets", assets.to_json() },
