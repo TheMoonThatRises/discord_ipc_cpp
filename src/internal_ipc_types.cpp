@@ -94,11 +94,13 @@ CommandRequest CommandRequest::from_string(const std::string& data) {
   }
 
   return {
-    reverse_map_search(_cmd_str_map, json_data["cmd"].as<std::string>()),
-    .nonce { json_data["nonce"].as<std::string>() },
-    .args { args },
-    .data { res_data },
-    reverse_map_search(_evt_str_map, json_data["evt"].as<std::string>()),
+    .cmd = *reverse_map_search(
+      _cmd_str_map, json_data["cmd"].as<std::string>()),
+    .nonce = json_data["nonce"].as<std::string>(),
+    .args = args,
+    .data = res_data,
+    .evt = *reverse_map_search(
+      _evt_str_map, json_data["evt"].as<std::string>()),
   };
 }
 
@@ -106,10 +108,10 @@ PartialUser PartialUser::from_string(const std::string& data) {
   JSON json_data = Parser::parse(data);
 
   return {
-    .avatar { json_data["avatar"].as<std::string>() },
-    .discriminator { json_data["discriminator"].as<std::string>() },
-    .user_id { json_data["user_id"].as<std::string>() },
-    .username { json_data["username"].as<std::string>() }
+    .avatar = json_data["avatar"].as<std::string>(),
+    .discriminator = json_data["discriminator"].as<std::string>(),
+    .user_id = json_data["user_id"].as<std::string>(),
+    .username = json_data["username"].as<std::string>()
   };
 }
 }  // namespace discord_ipc_cpp::internal_ipc_types
