@@ -28,8 +28,6 @@ JSON::JSON(const char* value) : _value(std::string(value)) {}
 
 JSON::JSON(JSONInt value) : _value(value) {}
 
-JSON::JSON(JSONLong value) : _value(value) {}
-
 JSON::JSON(JSONDouble value) : _value(value) {}
 
 JSON::JSON(JSONBool value) : _value(value) {}
@@ -104,8 +102,6 @@ void JSON::stringify(std::ostream& os) const {
     os << "\"" << escape_string(as<JSONString>()) << "\"";
   } else if (is<JSONInt>()) {
     os << std::to_string(as<JSONInt>());
-  } else if (is<JSONLong>()) {
-    os << std::to_string(as<JSONLong>());
   } else if (is<JSONDouble>()) {
     os << std::to_string(as<JSONDouble>());
   } else if (is<JSONBool>()) {

@@ -156,11 +156,7 @@ JSON Parser::parse_number() {
   if (is_double) {
     return JSON(stod(number));
   } else {
-    try {
-      return JSON(stoi(number));
-    } catch (const std::out_of_range&) {
-      return JSON(stol(number));
-    }
+    return JSON(stoi(number));
   }
 }
 

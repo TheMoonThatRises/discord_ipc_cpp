@@ -31,8 +31,8 @@ struct Payload {
 struct RichPresence {
  public:
   struct Timestamps {
-    std::optional<long> start;
-    std::optional<long> end;
+    std::optional<int> start;
+    std::optional<int> end;
 
    private:
       json::JSON to_json() const;
