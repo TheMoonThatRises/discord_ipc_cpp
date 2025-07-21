@@ -24,6 +24,9 @@ template<typename T>
 T generate_random_num(T min, T max);
 
 std::string generate_uuid();
+
+template<typename A, typename B>
+A reverse_map_search(const std::map<A, B>& map, const B& item);
 }  // namespace discord_ipc_cpp::utils
 
 #endif  // DISCORD_IPC_CPP_SRC_INCLUDE_UTILS_HPP_

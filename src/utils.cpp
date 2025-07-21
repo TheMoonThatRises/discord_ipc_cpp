@@ -84,6 +84,17 @@ std::string generate_uuid() {
   return uuid;
 }
 
+template<typename A, typename B>
+A reverse_map_search(const std::map<A, B>& map, const B& item) {
+  for (const auto& [key, value] : map) {
+    if (value == item) {
+      return key;
+    }
+  }
+
+  return nullptr;
+}
+
 template double generate_random_num(double, double);
 template int generate_random_num(int, int);
 }  // namespace discord_ipc_cpp::utils
