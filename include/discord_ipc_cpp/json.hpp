@@ -54,13 +54,15 @@ class JSON {
   explicit JSON(const JSONObject& value);
 
   JSON& operator[](const JSONString& key);
-  JSON operator[](const JSONString& key) const;
+  const JSON& operator[](const JSONString& key) const;
 
   template<typename T>
   T as() const;
 
   template<typename T>
   bool is() const;
+
+  bool has(const JSONString& key) const;
 
   void push_back(const JSON& item);
 

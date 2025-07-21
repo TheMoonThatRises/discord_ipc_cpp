@@ -14,8 +14,8 @@
 #include <vector>
 
 #include "discord_ipc_cpp/socket_client.hpp"
-#include "discord_ipc_cpp/json.hpp"
 #include "discord_ipc_cpp/ipc_types.hpp"
+#include "discord_ipc_cpp/json.hpp"
 
 namespace discord_ipc_cpp {
 class DiscordIPCClient {
@@ -29,12 +29,12 @@ class DiscordIPCClient {
   std::atomic_bool _stop_recv_thread;
 
  private:
-  static std::vector<char> encode_packet(const ipc_types::IPCPayload& payload);
+  static std::vector<char> encode_packet(const ipc_types::Payload& payload);
   void recv_thread();
 
  protected:
-  bool send_packet(const ipc_types::IPCPayload& payload);
-  std::optional<ipc_types::IPCPayload> recv_packet();
+  bool send_packet(const ipc_types::Payload& payload);
+  std::optional<ipc_types::Payload> recv_packet();
 
  public:
   explicit DiscordIPCClient(const std::string& client_id);

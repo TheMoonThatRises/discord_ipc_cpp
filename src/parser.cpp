@@ -11,9 +11,9 @@
 #include "include/parser.hpp"
 #include "include/utils.hpp"
 
+namespace discord_ipc_cpp::json {
 using discord_ipc_cpp::utils::unescape_string;
 
-namespace discord_ipc_cpp::json {
 JSON Parser::parse(const std::string& json) {
   return Parser(json).parse_value();
 }

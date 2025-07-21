@@ -79,7 +79,7 @@ std::optional<std::vector<char>> SocketClient::recv_data(int buffer_size) {
   int ret = ::recv(_client_socket, buffer.data(), buffer.size(), 0);
 
   if (ret == -1) {
-    return {};
+    return std::nullopt;
   }
 
   return buffer;
@@ -93,7 +93,7 @@ std::optional<std::vector<char>> SocketClient::recv_data(
   if (ret > 0 && _fds[0].revents & POLLIN) {
     return recv_data(buffer_size);
   } else {
-    return {};
+    return std::nullopt;
   }
 }
 }  // namespace discord_ipc_cpp::websockets

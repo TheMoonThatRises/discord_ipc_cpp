@@ -15,9 +15,9 @@
 
 #include "include/utils.hpp"
 
+namespace discord_ipc_cpp::json {
 using discord_ipc_cpp::utils::escape_string;
 
-namespace discord_ipc_cpp::json {
 JSON::JSON() : _value(JSONObject{}) {}
 
 JSON::JSON(JSONNull value) : _value(value) {}
@@ -40,7 +40,7 @@ JSON& JSON::operator[](const JSONString& key) {
   return std::get<JSONObject>(_value)[key];
 }
 
-JSON JSON::operator[](const JSONString& key) const {
+const JSON& JSON::operator[](const JSONString& key) const {
   return std::get<JSONObject>(_value).at(key);
 }
 
@@ -52,6 +52,10 @@ T JSON::as() const {
 template<typename T>
 bool JSON::is() const {
   return std::holds_alternative<T>(_value);
+}
+
+bool JSON::has(const JSONString& key) const {
+  return as<JSONObject>().contains(key);
 }
 
 void JSON::push_back(const JSON& item) {
