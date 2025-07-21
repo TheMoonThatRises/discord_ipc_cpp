@@ -75,43 +75,39 @@ JSON CommandRequest::to_json() const {
   return base;
 }
 
-CommandRequest CommandRequest::from_string(const std::string& data) {
-  JSON json_data = Parser::parse(data);
-
+CommandRequest CommandRequest::from_json(const JSON& data) {
   std::optional<JSON> res_data;
   std::optional<std::map<std::string, RequestArgs>> args;
 
-  if (json_data.has("data")) {
-    res_data = json_data["data"];
+  if (data.has("data")) {
+    res_data = data["data"];
   }
 
-  if (json_data.has("args")) {
+  if (data.has("args")) {
     auto& out_args = args.emplace();
 
-    for (const auto& [key, value] : json_data["args"].as<JSONObject>()) {
+    for (const auto& [key, value] : data["args"].as<JSONObject>()) {
       out_args[key] = value.to_string();
     }
   }
 
   return {
     .cmd = *reverse_map_search(
-      _cmd_str_map, json_data["cmd"].as<std::string>()),
-    .nonce = json_data["nonce"].as<std::string>(),
+      _cmd_str_map, data["cmd"].as<std::string>()),
+    .nonce = data["nonce"].as<std::string>(),
     .args = args,
     .data = res_data,
     .evt = *reverse_map_search(
-      _evt_str_map, json_data["evt"].as<std::string>()),
+      _evt_str_map, data["evt"].as<std::string>()),
   };
 }
 
-PartialUser PartialUser::from_string(const std::string& data) {
-  JSON json_data = Parser::parse(data);
-
+PartialUser PartialUser::from_json(const JSON& data) {
   return {
-    .avatar = json_data["avatar"].as<std::string>(),
-    .discriminator = json_data["discriminator"].as<std::string>(),
-    .user_id = json_data["user_id"].as<std::string>(),
-    .username = json_data["username"].as<std::string>()
+    .avatar = data["avatar"].as<std::string>(),
+    .discriminator = data["discriminator"].as<std::string>(),
+    .user_id = data["user_id"].as<std::string>(),
+    .username = data["username"].as<std::string>()
   };
 }
 }  // namespace discord_ipc_cpp::internal_ipc_types

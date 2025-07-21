@@ -7,6 +7,7 @@
 
 #include <unistd.h>
 
+#include <map>
 #include <thread>
 #include <string>
 #include <optional>
@@ -29,6 +30,10 @@ using discord_ipc_cpp::json::Parser;
 
 using discord_ipc_cpp::ipc_types::Opcode;
 using discord_ipc_cpp::ipc_types::Payload;
+using discord_ipc_cpp::ipc_types::RichPresence;
+
+using discord_ipc_cpp::internal_ipc_types::AuthorizationRequest;
+using discord_ipc_cpp::internal_ipc_types::CommandRequest;
 
 std::vector<char> DiscordIPCClient::encode_packet(
   const Payload& payload
@@ -64,23 +69,15 @@ void DiscordIPCClient::recv_thread() {
 
         break;
       case Opcode::frame: {
-        if (recv_payload.payload["cmd"].as<std::string>() == "DISPATCH") {
-          JSON activity = JSON();
+          CommandRequest response = CommandRequest::from_json(
+            recv_payload.payload);
 
-          activity["cmd"] = JSON("SET_ACTIVITY");
-          activity["args"] = JSON({
-            {"pid", JSON(_pid)},
-            {"activity", JSON({
-              {"state", JSON("test state")},
-              {"details", JSON("test details")}
-            })}
-          });
-          activity["nonce"] = JSON(utils::generate_uuid());
-
-          send_packet({ Opcode::frame, activity });
+          if (response.cmd == CommandRequest::dispatch) {
+            _successful_auth = true;
+          }
         }
+
         break;
-      }
       case Opcode::close:
         close();
 
@@ -97,13 +94,20 @@ DiscordIPCClient::DiscordIPCClient(const std::string& client_id)
 : _pid(getpid()),
 _client_id(client_id),
 _socket(utils::find_discord_ipc_file()),
-_stop_recv_thread(false) {}
+_stop_recv_thread(false),
+_successful_auth(false) {}
 
 DiscordIPCClient::~DiscordIPCClient() {
   close();
 }
 
 bool DiscordIPCClient::send_packet(const Payload& payload) {
+  if (payload.opcode != Opcode::handshake &&
+      payload.opcode != Opcode::close &&
+      !_successful_auth) {
+    return false;
+  }
+
   std::vector<char> packet = encode_packet(payload);
 
   return _socket.send_data(packet);
@@ -139,6 +143,40 @@ std::optional<Payload> DiscordIPCClient::recv_packet() {
   };
 }
 
+Payload DiscordIPCClient::construct_presence_payload(
+  const RichPresence& presence) {
+    Payload payload = {
+    .opcode = Opcode::frame,
+    .payload = CommandRequest {
+      .cmd = CommandRequest::setActivity,
+      .nonce = utils::generate_uuid(),
+      .args = std::map<std::string, CommandRequest::RequestArgs> {
+        { "pid", _pid },
+        { "activity", presence }
+      }
+    }.to_json()
+  };
+
+  return payload;
+}
+
+bool DiscordIPCClient::attempt_send_payload(
+  const ipc_types::Payload& payload,
+  int max_retry_count
+) {
+  bool success;
+  int retry_count = 0;
+
+  do {
+    success = send_packet(payload);
+
+    ++retry_count;
+  } while (!success && retry_count <= max_retry_count);
+
+  return success;
+}
+
+
 bool DiscordIPCClient::connect() {
   bool ret = _socket.connect();
 
@@ -147,11 +185,11 @@ bool DiscordIPCClient::connect() {
   }
 
   ret = send_packet({
-    Opcode::handshake,
-    JSON({
-      {"v", JSON(1)},
-      {"client_id", JSON(_client_id)}
-    })
+    .opcode = Opcode::handshake,
+    .payload = AuthorizationRequest {
+      .version = "1",
+      .client_id = _client_id
+    }.to_json()
   });
 
   if (!ret) {
@@ -172,12 +210,27 @@ bool DiscordIPCClient::connect() {
 }
 
 bool DiscordIPCClient::close() {
-  send_packet({ Opcode::close, {} });
+  send_packet({
+    .opcode = Opcode::close,
+    .payload = {}
+  });
 
   _stop_recv_thread = true;
 
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
   return _socket.close();
+}
+
+bool DiscordIPCClient::set_presence(const ipc_types::RichPresence& presence) {
+  Payload payload = construct_presence_payload(presence);
+
+  return attempt_send_payload(payload, 3);
+}
+
+bool DiscordIPCClient::set_empty_presence() {
+  Payload payload = construct_presence_payload({});
+
+  return attempt_send_payload(payload, 3);
 }
 }  // namespace discord_ipc_cpp

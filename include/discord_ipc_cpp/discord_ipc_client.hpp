@@ -27,6 +27,7 @@ class DiscordIPCClient {
   std::thread _socket_recv_thread;
 
   std::atomic_bool _stop_recv_thread;
+  std::atomic_bool _successful_auth;
 
  private:
   static std::vector<char> encode_packet(const ipc_types::Payload& payload);
@@ -36,12 +37,21 @@ class DiscordIPCClient {
   bool send_packet(const ipc_types::Payload& payload);
   std::optional<ipc_types::Payload> recv_packet();
 
+  ipc_types::Payload construct_presence_payload(
+    const ipc_types::RichPresence& presence);
+
+  bool attempt_send_payload(
+    const ipc_types::Payload& payload, int max_retry_count);
+
  public:
   explicit DiscordIPCClient(const std::string& client_id);
   ~DiscordIPCClient();
 
   bool connect();
   bool close();
+
+  bool set_presence(const ipc_types::RichPresence& presence);
+  bool set_empty_presence();
 };
 }  // namespace discord_ipc_cpp
 

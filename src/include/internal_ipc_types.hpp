@@ -65,7 +65,7 @@ struct CommandRequest {
 
  public:
   json::JSON to_json() const;
-  static CommandRequest from_string(const std::string& data);
+  static CommandRequest from_json(const json::JSON& data);
 
  private:
   static const std::map<CommandType, std::string> _cmd_str_map;
@@ -79,7 +79,7 @@ struct PartialUser {
   const std::string username;
 
  public:
-  static PartialUser from_string(const std::string& data);
+  static PartialUser from_json(const json::JSON& data);
 };
 }  // namespace discord_ipc_cpp::internal_ipc_types
 

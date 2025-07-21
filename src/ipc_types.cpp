@@ -101,6 +101,7 @@ JSON RichPresence::to_json() const {
     { "details", JSON(details) },
     { "instance", JSON(instance) },
     { "party", party.to_json() },
+    { "state", JSON(state) },
     { "timestamps", timestamps.to_json() }
   });
 
