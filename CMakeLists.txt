@@ -6,6 +6,8 @@ project(discord_ipc_cpp
 
 add_library(discord_ipc_cpp STATIC
   src/discord_ipc_client.cpp
+  src/internal_ipc_types.cpp
+  src/ipc_types.cpp
   src/json.cpp
   src/parser.cpp
   src/socket_client.cpp
