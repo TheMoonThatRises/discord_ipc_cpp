@@ -28,6 +28,8 @@ JSON::JSON(const char* value) : _value(std::string(value)) {}
 
 JSON::JSON(JSONInt value) : _value(value) {}
 
+JSON::JSON(JSONLong value) : _value(value) {}
+
 JSON::JSON(JSONDouble value) : _value(value) {}
 
 JSON::JSON(JSONBool value) : _value(value) {}
@@ -102,6 +104,8 @@ void JSON::stringify(std::ostream& os) const {
     os << "\"" << escape_string(as<JSONString>()) << "\"";
   } else if (is<JSONInt>()) {
     os << std::to_string(as<JSONInt>());
+  } else if (is<JSONLong>()) {
+    os << std::to_string(as<JSONLong>());
   } else if (is<JSONDouble>()) {
     os << std::to_string(as<JSONDouble>());
   } else if (is<JSONBool>()) {
@@ -119,6 +123,7 @@ std::string JSON::to_string() const {
 
 template JSONString JSON::as<JSONString>() const;
 template JSONInt JSON::as<JSONInt>() const;
+template JSONLong JSON::as<JSONLong>() const;
 template JSONDouble JSON::as<JSONDouble>() const;
 template JSONBool JSON::as<JSONBool>() const;
 template JSONArray JSON::as<JSONArray>() const;
@@ -127,6 +132,7 @@ template JSONNull JSON::as<JSONNull>() const;
 
 template bool JSON::is<JSONString>() const;
 template bool JSON::is<JSONInt>() const;
+template bool JSON::is<JSONLong>() const;
 template bool JSON::is<JSONDouble>() const;
 template bool JSON::is<JSONBool>() const;
 template bool JSON::is<JSONArray>() const;

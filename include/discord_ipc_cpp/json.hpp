@@ -20,6 +20,7 @@ class JSON;
 typedef std::nullptr_t JSONNull;
 typedef std::string JSONString;
 typedef int JSONInt;
+typedef int64_t JSONLong;
 typedef double JSONDouble;
 typedef bool JSONBool;
 typedef std::map<std::string, JSON> JSONObject;
@@ -31,6 +32,7 @@ class JSON {
     JSONNull,
     JSONString,
     JSONInt,
+    JSONLong,
     JSONDouble,
     JSONBool,
     JSONArray,
@@ -48,6 +50,7 @@ class JSON {
   explicit JSON(const JSONString& value);
   explicit JSON(const char* value);
   explicit JSON(JSONInt value);
+  explicit JSON(JSONLong value);
   explicit JSON(JSONDouble value);
   explicit JSON(JSONBool value);
   explicit JSON(const JSONArray& value);
