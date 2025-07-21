@@ -38,7 +38,7 @@ class DiscordIPCClient {
   std::optional<ipc_types::Payload> recv_packet();
 
   ipc_types::Payload construct_presence_payload(
-    const ipc_types::RichPresence& presence);
+    const std::optional<ipc_types::RichPresence>& presence);
 
   bool attempt_send_payload(
     const ipc_types::Payload& payload, int max_retry_count);

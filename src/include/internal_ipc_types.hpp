@@ -58,10 +58,10 @@ struct CommandRequest {
 
  public:
   const CommandType cmd;
-  const std::string nonce;
+  const std::optional<std::string> nonce;
   const std::optional<std::map<std::string, RequestArgs>> args;
   const std::optional<json::JSON> data;
-  const EventType evt;
+  const std::optional<EventType> evt;
 
  public:
   json::JSON to_json() const;

@@ -26,6 +26,7 @@
 namespace discord_ipc_cpp {
 using discord_ipc_cpp::json::JSON;
 using discord_ipc_cpp::json::JSONObject;
+using discord_ipc_cpp::json::JSONArray;
 using discord_ipc_cpp::json::Parser;
 
 using discord_ipc_cpp::ipc_types::Opcode;
@@ -144,18 +145,23 @@ std::optional<Payload> DiscordIPCClient::recv_packet() {
 }
 
 Payload DiscordIPCClient::construct_presence_payload(
-  const RichPresence& presence) {
+  const std::optional<RichPresence>& presence) {
+    std::map<std::string, CommandRequest::RequestArgs> args = {
+      { "pid", _pid }
+    };
+
+    if (presence.has_value()) {
+      args.insert({ "activity", presence.value() });
+    }
+
     Payload payload = {
-    .opcode = Opcode::frame,
-    .payload = CommandRequest {
-      .cmd = CommandRequest::setActivity,
-      .nonce = utils::generate_uuid(),
-      .args = std::map<std::string, CommandRequest::RequestArgs> {
-        { "pid", _pid },
-        { "activity", presence }
-      }
-    }.to_json()
-  };
+      .opcode = Opcode::frame,
+      .payload = CommandRequest {
+        .cmd = CommandRequest::setActivity,
+        .nonce = utils::generate_uuid(),
+        .args = args
+      }.to_json()
+    };
 
   return payload;
 }
@@ -170,7 +176,11 @@ bool DiscordIPCClient::attempt_send_payload(
   do {
     success = send_packet(payload);
 
-    ++retry_count;
+    if (!success) {
+      std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
+      ++retry_count;
+    }
   } while (!success && retry_count <= max_retry_count);
 
   return success;
@@ -217,7 +227,7 @@ bool DiscordIPCClient::close() {
 
   _stop_recv_thread = true;
 
-  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+  std::this_thread::sleep_for(std::chrono::milliseconds(25));
 
   return _socket.close();
 }

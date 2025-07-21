@@ -53,10 +53,12 @@ const std::map<EventType, std::string> CommandRequest::_evt_str_map = {
 JSON CommandRequest::to_json() const {
   JSON base({
     { "cmd", JSON(_cmd_str_map.at(cmd)) },
-    { "nonce", JSON(nonce) },
-    { "evt", JSON(_evt_str_map.at(evt)) },
     { "args", JSON(JSONObject {}) }
   });
+
+  if (evt.has_value()) {
+    base["evt"] = JSON(_evt_str_map.at(evt.value()));
+  }
 
   if (args.has_value()) {
     auto args_val = args.value();
@@ -72,12 +74,20 @@ JSON CommandRequest::to_json() const {
     }
   }
 
+  if (nonce.has_value()) {
+    base["nonce"] = JSON(nonce.value());
+  } else {
+    base["nonce"] = JSON(nullptr);
+  }
+
   return base;
 }
 
 CommandRequest CommandRequest::from_json(const JSON& data) {
   std::optional<JSON> res_data;
   std::optional<std::map<std::string, RequestArgs>> args;
+  std::optional<std::string> nonce;
+  std::optional<EventType> evt;
 
   if (data.has("data")) {
     res_data = data["data"];
@@ -91,14 +101,20 @@ CommandRequest CommandRequest::from_json(const JSON& data) {
     }
   }
 
+  if (data.has("nonce") && data["nonce"].is<std::string>()) {
+    nonce = data["nonce"].as<std::string>();
+  }
+
+  if (data.has("evt") && data["evt"].is<std::string>()) {
+    evt = *reverse_map_search(_evt_str_map, data["evt"].as<std::string>());
+  }
+
   return {
-    .cmd = *reverse_map_search(
-      _cmd_str_map, data["cmd"].as<std::string>()),
-    .nonce = data["nonce"].as<std::string>(),
+    .cmd = *reverse_map_search(_cmd_str_map, data["cmd"].as<std::string>()),
+    .nonce = nonce,
     .args = args,
     .data = res_data,
-    .evt = *reverse_map_search(
-      _evt_str_map, data["evt"].as<std::string>()),
+    .evt = evt,
   };
 }
 
