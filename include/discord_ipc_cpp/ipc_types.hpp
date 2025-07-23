@@ -16,11 +16,11 @@
 
 namespace discord_ipc_cpp::ipc_types {
 enum Opcode : int {
-  handshake = 0,
-  frame = 1,
-  close = 2,
-  ping = 3,
-  pong = 4
+  op_handshake = 0,
+  op_frame = 1,
+  op_close = 2,
+  op_ping = 3,
+  op_pong = 4
 };
 
 struct Payload {
@@ -40,11 +40,21 @@ struct RichPresence {
       friend struct RichPresence;
   };
 
-  struct Assets {
-    std::optional<std::string> large_image;
-    std::optional<std::string> large_text;
-    std::optional<std::string> small_image;
-    std::optional<std::string> small_text;
+  struct ActivityEmoji {
+    std::string name;
+    std::optional<std::string> snowflake;
+    std::optional<bool> animated;
+
+   private:
+    json::JSON to_json() const;
+
+    friend struct RichPresence;
+  };
+
+  struct Party {
+    std::optional<std::string> id;
+    std::optional<int> max;
+    std::optional<int> size;
 
    private:
       json::JSON to_json() const;
@@ -52,10 +62,13 @@ struct RichPresence {
       friend struct RichPresence;
   };
 
-  struct Party {
-    std::optional<std::string> id;
-    std::optional<int> max;
-    std::optional<int> size;
+  struct Assets {
+    std::optional<std::string> large_image;
+    std::optional<std::string> large_text;
+    std::optional<std::string> large_url;
+    std::optional<std::string> small_image;
+    std::optional<std::string> small_text;
+    std::optional<std::string> small_url;
 
    private:
       json::JSON to_json() const;
@@ -84,25 +97,40 @@ struct RichPresence {
       friend struct RichPresence;
   };
 
+  enum StatusDisplayType : int {
+    sdt_name = 0,
+    sdt_state = 1,
+    sdt_details = 2
+  };
+
   enum ActivityType : int {
-    game = 0,
-    streaming = 1,
-    listening = 2,
-    watching = 3,
-    custom = 4,
-    competing = 5
+    at_game = 0,
+    at_streaming = 1,
+    at_listening = 2,
+    at_watching = 3,
+    at_custom = 4,
+    at_competing = 5
   };
 
  public:
-  Assets assets {};
-  std::string details {};
-  bool instance { true };
-  Party party {};
+  std::string name {};
+  ActivityType type {};
+  std::optional<std::string> url { std::nullopt };
+  std::optional<int64_t> created_at { std::nullopt };
+  std::optional<Timestamps> timestamps { std::nullopt };
+  std::optional<std::string> application_id { std::nullopt };
+  std::optional<StatusDisplayType> status_display_type { std::nullopt };
+  std::optional<std::string> details { std::nullopt };
+  std::optional<std::string> details_url { std::nullopt };
+  std::optional<std::string> state { std::nullopt };
+  std::optional<std::string> state_url { std::nullopt };
+  std::optional<ActivityEmoji> emoji { std::nullopt };
+  std::optional<Party> party { std::nullopt };
+  std::optional<Assets> assets { std::nullopt };
   std::optional<Secrets> secrets { std::nullopt };
-  std::string state {};
-  Timestamps timestamps {};
+  std::optional<bool> instance { std::nullopt };
+  std::optional<int64_t> flags { std::nullopt };
   std::optional<std::vector<Button>> buttons { std::nullopt };
-  std::optional<ActivityType> type { std::nullopt };
 
  public:
   json::JSON to_json() const;
