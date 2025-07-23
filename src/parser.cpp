@@ -22,7 +22,9 @@ JSON Parser::parse(const std::string& json) {
 Parser::Parser(const std::string& json) : _json(json), _pos(0) {}
 
 void Parser::skip_whitespace() {
-  while (_pos < _json.length() && isspace(_json[_pos])) {
+  while (_pos < _json.length() &&
+        (isspace(_json[_pos]) || _json[_pos] == '\n')
+  ) {
     ++_pos;
   }
 }
@@ -31,7 +33,7 @@ void Parser::expect(char item) {
   skip_whitespace();
 
   if (_json[_pos] != item) {
-    throw std::runtime_error("Unexpected char");
+    throw std::runtime_error("Unexpected char: " + std::string(1, _json[_pos]));
   }
 
   ++_pos;
@@ -64,7 +66,11 @@ JSON Parser::parse_object() {
   }
 
   while (true) {
+    skip_whitespace();
+
     std::string key = parse_string();
+
+    skip_whitespace();
 
     expect(':');
 
@@ -87,7 +93,10 @@ JSON Parser::parse_object() {
 JSON Parser::parse_array() {
   JSON base(JSONArray{});
 
+  skip_whitespace();
+
   expect('[');
+
   skip_whitespace();
 
   if (_json[_pos] == ']') {
@@ -108,6 +117,8 @@ JSON Parser::parse_array() {
     }
 
     expect(',');
+
+    skip_whitespace();
   }
 
   return base;
