@@ -9,9 +9,9 @@
 #include <string>
 
 #include "discord_ipc_cpp/json.hpp"
+#include "discord_ipc_cpp/parser.hpp"
 
 #include "include/internal_ipc_types.hpp"
-#include "include/parser.hpp"
 #include "include/utils.hpp"
 
 namespace discord_ipc_cpp::internal_ipc_types {
@@ -34,20 +34,20 @@ JSON AuthorizationRequest::to_json() const {
 }
 
 const std::map<CommandType, std::string> CommandRequest::_cmd_str_map = {
-  { dispatch, "DISPATCH" },
-  { authorize, "AUTHORIZE" },
-  { subscribe, "SUBSCRIBE" },
-  { setActivity, "SET_ACTIVITY" },
-  { sendActivityJoinInvite, "SEND_ACTIVITY_JOIN_INVITE" },
-  { closeActivityJoinRequest, "CLOSE_ACTIVITY_JOIN_REQUEST" }
+  { ct_dispatch, "DISPATCH" },
+  { ct_authorize, "AUTHORIZE" },
+  { ct_subscribe, "SUBSCRIBE" },
+  { ct_set_activity, "SET_ACTIVITY" },
+  { ct_send_activity_join_invite, "SEND_ACTIVITY_JOIN_INVITE" },
+  { ct_close_activity_join_request, "CLOSE_ACTIVITY_JOIN_REQUEST" }
 };
 
 const std::map<EventType, std::string> CommandRequest::_evt_str_map = {
-  { error, "ERROR" },
-  { join, "ACTIVITY_JOIN" },
-  { joinRequest, "ACTIVITY_JOIN_REQUEST" },
-  { ready, "READY" },
-  { spectate, "SPECTATE" }
+  { et_error, "ERROR" },
+  { et_join, "ACTIVITY_JOIN" },
+  { et_joinRequest, "ACTIVITY_JOIN_REQUEST" },
+  { et_ready, "READY" },
+  { et_spectate, "SPECTATE" }
 };
 
 JSON CommandRequest::to_json() const {

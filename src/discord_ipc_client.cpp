@@ -18,10 +18,10 @@
 #include "discord_ipc_cpp/discord_ipc_client.hpp"
 #include "discord_ipc_cpp/socket_client.hpp"
 #include "discord_ipc_cpp/json.hpp"
+#include "discord_ipc_cpp/parser.hpp"
 
 #include "include/internal_ipc_types.hpp"
 #include "include/utils.hpp"
-#include "include/parser.hpp"
 
 namespace discord_ipc_cpp {
 using discord_ipc_cpp::json::JSON;
@@ -65,21 +65,21 @@ void DiscordIPCClient::recv_thread() {
     std::cout << recv_payload.payload.to_string() << std::endl;
 
     switch (recv_payload.opcode) {
-      case Opcode::ping:
-        send_packet({ Opcode::pong, recv_payload.payload });
+      case Opcode::op_ping:
+        send_packet({ Opcode::op_pong, recv_payload.payload });
 
         break;
-      case Opcode::frame: {
+      case Opcode::op_frame: {
           CommandRequest response = CommandRequest::from_json(
             recv_payload.payload);
 
-          if (response.cmd == CommandRequest::dispatch) {
+          if (response.cmd == CommandRequest::ct_dispatch) {
             _successful_auth = true;
           }
         }
 
         break;
-      case Opcode::close:
+      case Opcode::op_close:
         close();
 
         break;
@@ -103,8 +103,8 @@ DiscordIPCClient::~DiscordIPCClient() {
 }
 
 bool DiscordIPCClient::send_packet(const Payload& payload) {
-  if (payload.opcode != Opcode::handshake &&
-      payload.opcode != Opcode::close &&
+  if (payload.opcode != Opcode::op_handshake &&
+      payload.opcode != Opcode::op_close &&
       !_successful_auth) {
     return false;
   }
@@ -155,9 +155,9 @@ Payload DiscordIPCClient::construct_presence_payload(
     }
 
     Payload payload = {
-      .opcode = Opcode::frame,
+      .opcode = Opcode::op_frame,
       .payload = CommandRequest {
-        .cmd = CommandRequest::setActivity,
+        .cmd = CommandRequest::ct_set_activity,
         .nonce = utils::generate_uuid(),
         .args = args
       }.to_json()
@@ -195,7 +195,7 @@ bool DiscordIPCClient::connect() {
   }
 
   ret = send_packet({
-    .opcode = Opcode::handshake,
+    .opcode = Opcode::op_handshake,
     .payload = AuthorizationRequest {
       .version = "1",
       .client_id = _client_id
@@ -221,7 +221,7 @@ bool DiscordIPCClient::connect() {
 
 bool DiscordIPCClient::close() {
   send_packet({
-    .opcode = Opcode::close,
+    .opcode = Opcode::op_close,
     .payload = {}
   });
 

@@ -18,9 +18,9 @@
 
 namespace discord_ipc_cpp::internal_ipc_types {
 enum JoinReply {
-  no,
-  yes,
-  ignore
+  jr_no,
+  jr_yes,
+  jr_ignore
 };
 
 struct AuthorizationRequest {
@@ -40,20 +40,20 @@ struct CommandRequest {
   >;
 
   enum CommandType {
-    dispatch,
-    authorize,
-    subscribe,
-    setActivity,
-    sendActivityJoinInvite,
-    closeActivityJoinRequest
+    ct_dispatch,
+    ct_authorize,
+    ct_subscribe,
+    ct_set_activity,
+    ct_send_activity_join_invite,
+    ct_close_activity_join_request
   };
 
   enum EventType {
-    error,
-    join,
-    joinRequest,
-    ready,
-    spectate
+    et_error,
+    et_join,
+    et_joinRequest,
+    et_ready,
+    et_spectate
   };
 
  public:
