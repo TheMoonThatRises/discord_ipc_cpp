@@ -5,8 +5,8 @@
   with discord_ipc_cpp. If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DISCORD_IPC_CPP_SRC_INCLUDE_PARSER_HPP_
-#define DISCORD_IPC_CPP_SRC_INCLUDE_PARSER_HPP_
+#ifndef DISCORD_IPC_CPP_INCLUDE_DISCORD_IPC_CPP_PARSER_HPP_
+#define DISCORD_IPC_CPP_INCLUDE_DISCORD_IPC_CPP_PARSER_HPP_
 
 #include <string>
 
@@ -37,4 +37,4 @@ class Parser {
 };
 }  // namespace discord_ipc_cpp::json
 
-#endif  // DISCORD_IPC_CPP_SRC_INCLUDE_PARSER_HPP_
+#endif  // DISCORD_IPC_CPP_INCLUDE_DISCORD_IPC_CPP_PARSER_HPP_

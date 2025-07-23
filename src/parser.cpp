@@ -8,7 +8,8 @@
 #include <limits>
 #include <string>
 
-#include "include/parser.hpp"
+#include "discord_ipc_cpp/parser.hpp"
+
 #include "include/utils.hpp"
 
 namespace discord_ipc_cpp::json {
