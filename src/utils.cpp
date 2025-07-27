@@ -26,7 +26,7 @@ const std::map<std::string, std::string> _escape_key {
 };
 
 std::string find_discord_ipc_file() {
-  std::string user_tmp_dir = getenv("TMPDIR");
+  std::string user_tmp_dir = std::getenv("TMPDIR");
   std::string base_ipc_name = "discord-ipc-";
 
   for (int i = 0; i < 10; ++i) {

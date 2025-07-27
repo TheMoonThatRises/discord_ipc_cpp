@@ -61,7 +61,6 @@ void DiscordIPCClient::recv_thread() {
 
     Payload recv_payload = std::move(*optional_payload);
 
-    std::cout << recv_payload.opcode << std::endl;
     std::cout << recv_payload.payload.to_string() << std::endl;
 
     switch (recv_payload.opcode) {
