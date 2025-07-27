@@ -8,6 +8,7 @@
 #include <format>
 #include <string>
 #include <sstream>
+#include <optional>
 #include <variant>
 #include <vector>
 
@@ -46,9 +47,33 @@ const JSON& JSON::operator[](const JSONString& key) const {
   return std::get<JSONObject>(_value).at(key);
 }
 
+const std::optional<JSON> JSON::safe_at(const JSONString& key) const {
+  if (!is<JSONObject>()) {
+    return std::nullopt;
+  }
+
+  const JSONObject& object = std::get<JSONObject>(_value);
+  auto it = object.find(key);
+
+  if (it == object.end()) {
+    return std::nullopt;
+  }
+
+  return it->second;
+}
+
 template<typename T>
 T JSON::as() const {
   return std::get<T>(_value);
+}
+
+template<typename T>
+std::optional<T> JSON::safe_as() const {
+  if (is<T>()) {
+    return std::get<T>(_value);
+  } else {
+    return T();
+  }
 }
 
 template<typename T>
@@ -129,6 +154,15 @@ template JSONBool JSON::as<JSONBool>() const;
 template JSONArray JSON::as<JSONArray>() const;
 template JSONObject JSON::as<JSONObject>() const;
 template JSONNull JSON::as<JSONNull>() const;
+
+template std::optional<JSONString> JSON::safe_as<JSONString>() const;
+template std::optional<JSONInt> JSON::safe_as<JSONInt>() const;
+template std::optional<JSONLong> JSON::safe_as<JSONLong>() const;
+template std::optional<JSONDouble> JSON::safe_as<JSONDouble>() const;
+template std::optional<JSONBool> JSON::safe_as<JSONBool>() const;
+template std::optional<JSONArray> JSON::safe_as<JSONArray>() const;
+template std::optional<JSONObject> JSON::safe_as<JSONObject>() const;
+template std::optional<JSONNull> JSON::safe_as<JSONNull>() const;
 
 template bool JSON::is<JSONString>() const;
 template bool JSON::is<JSONInt>() const;

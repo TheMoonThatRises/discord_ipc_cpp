@@ -11,6 +11,7 @@
 #include <map>
 #include <string>
 #include <sstream>
+#include <optional>
 #include <variant>
 #include <vector>
 
@@ -59,8 +60,13 @@ class JSON {
   JSON& operator[](const JSONString& key);
   const JSON& operator[](const JSONString& key) const;
 
+  const std::optional<JSON> safe_at(const JSONString& key) const;
+
   template<typename T>
   T as() const;
+
+  template<typename T>
+  std::optional<T> safe_as() const;
 
   template<typename T>
   bool is() const;
