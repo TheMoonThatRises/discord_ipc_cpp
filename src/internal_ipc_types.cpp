@@ -15,8 +15,8 @@
 #include "include/utils.hpp"
 
 namespace discord_ipc_cpp::internal_ipc_types {
-typedef CommandRequest::CommandType CommandType;
-typedef CommandRequest::EventType EventType;
+using CommandType = CommandRequest::CommandType;
+using EventType = CommandRequest::EventType;
 
 using ipc_types::RichPresence;
 

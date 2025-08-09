@@ -16,26 +16,107 @@
 #include <optional>
 #include <vector>
 
+/**
+ * \namespace discord_ipc_cpp::websockets
+ *
+ * \brief Underlying websocket communications.
+ *
+ * Contains the lowest level class for interacting with any IPC socket.
+ */
 namespace discord_ipc_cpp::websockets {
+/**
+ * \brief Interacts with sockets.
+ *
+ * Lowest level and simplest class for interacting with any IPC socket. Does not
+ * work with websockets surprisingly.
+ *
+ * \see discord_ipc_cpp::DiscordIPCClient
+ */
 class SocketClient {
  private:
-    std::string _socket_file;
+  /**
+   * \brief Path to the IPC file.
+   */
+  std::string _socket_file;
 
-    int _client_socket;
-    struct sockaddr_un _server_addr;
+  /**
+   * \brief Success of binding to IPC file.
+   */
+  int _client_socket;
+  /**
+   * \brief Address information of the IPC file.
+   */
+  struct sockaddr_un _server_addr;
 
-    struct pollfd _fds[1];
+  /**
+   * \brief Poll events of the socket.
+   */
+  struct pollfd _fds[1];
 
  public:
-    explicit SocketClient(const std::string& socket_file);
-    ~SocketClient();
+  /**
+   * \brief Creates socket connection precursor information.
+   */
+  explicit SocketClient(const std::string& socket_file);
+  /**
+   * \brief Cleans up socket the socket connection.
+   *
+   * \see close
+   */
+  ~SocketClient();
 
-    bool connect();
-    bool close();
+  /**
+   * \brief Attempts to connect to the socket file.
+   *
+   * \return Success of opening connection to socket file.
+   */
+  bool connect();
+  /**
+   * \brief Attempts to close connection to socket file.
+   *
+   * \return Success of closing connection to socket file.
+   */
+  bool close();
 
-    bool send_data(const std::vector<char>& data);
-    std::optional<std::vector<char>> recv_data(int buffer_size);
-    std::optional<std::vector<char>> recv_data(int buffer_size, int timeout);
+  /**
+   * \brief Sends data to socket.
+   *
+   * This will attempt to send a byte buffer of data to the socket file.
+   *
+   * \param data Data to send.
+   *
+   * \return Success of sending data.
+   */
+  bool send_data(const std::vector<char>& data);
+  /**
+   * \brief Receive data from socket.
+   *
+   * Attempts to retrieve data from the socket in a blocking manner. An empty
+   * optional will be returned if an error occurred while retrieving data from
+   * the socket.
+   *
+   * \param buffer_size Size of data to retrieve.
+   *
+   * \return Data from socket if successful.
+   *
+   * \see recv_data(int,int)
+   */
+  std::optional<std::vector<char>> recv_data(int buffer_size);
+  /**
+   * \brief Receive data from socket on timeout.
+   *
+   * Polls the socket for data in a blocking manner. If the socket contains data
+   * that can be retrieved, \ref recv_data(int) will be called to retrieve the
+   * data. If the poll times out, then an empty optional will be returned.
+   *
+   * \param buffer_size Size of data to retrieve.
+   * \param timeout Time to wait.
+   *
+   * \return Data from socket if existant.
+   *
+   * \see recv_data(int)
+   */
+  std::optional<std::vector<char>> recv_data(int buffer_size, int timeout);
 };
 }  // namespace discord_ipc_cpp::websockets
 

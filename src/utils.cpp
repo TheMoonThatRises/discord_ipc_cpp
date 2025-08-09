@@ -18,8 +18,8 @@
 #include "include/internal_ipc_types.hpp"
 
 namespace discord_ipc_cpp::utils {
-typedef internal_ipc_types::CommandRequest::CommandType CommandType;
-typedef internal_ipc_types::CommandRequest::EventType EventType;
+using CommandType = internal_ipc_types::CommandRequest::CommandType;
+using EventType = internal_ipc_types::CommandRequest::EventType;
 
 const std::map<std::string, std::string> _escape_key {
   {"\\\"", "\""}

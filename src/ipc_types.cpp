@@ -53,12 +53,11 @@ JSON RichPresence::Party::to_json() const {
     base["id"] = JSON(id.value());
   }
 
-  if (max.has_value()) {
-    base["max"] = JSON(max.value());
-  }
-
   if (size.has_value()) {
-    base["size"] = JSON(size.value());
+    base["size"] = JSON(JSONArray {
+      JSON(size.value()[0]),
+      JSON(size.value()[1])
+    });
   }
 
   return base;
