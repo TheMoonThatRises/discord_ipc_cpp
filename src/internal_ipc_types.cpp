@@ -45,7 +45,7 @@ const std::map<CommandType, std::string> CommandRequest::_cmd_str_map = {
 const std::map<EventType, std::string> CommandRequest::_evt_str_map = {
   { et_error, "ERROR" },
   { et_join, "ACTIVITY_JOIN" },
-  { et_joinRequest, "ACTIVITY_JOIN_REQUEST" },
+  { et_join_request, "ACTIVITY_JOIN_REQUEST" },
   { et_ready, "READY" },
   { et_spectate, "SPECTATE" }
 };
