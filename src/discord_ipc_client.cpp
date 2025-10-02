@@ -61,7 +61,10 @@ void DiscordIPCClient::recv_thread() {
 
     Payload recv_payload = std::move(*optional_payload);
 
-    std::cout << recv_payload.payload.to_string() << std::endl;
+    std::cout << recv_payload.opcode
+              << ": "
+              << recv_payload.payload.to_string()
+              << std::endl;
 
     switch (recv_payload.opcode) {
       case Opcode::op_ping:
@@ -78,6 +81,7 @@ void DiscordIPCClient::recv_thread() {
         }
 
         break;
+      case Opcode::op_handshake:
       case Opcode::op_close:
         close();
 
@@ -139,7 +143,7 @@ std::optional<Payload> DiscordIPCClient::recv_packet() {
 
   return Payload {
     static_cast<Opcode>(opcode),
-    Parser::parse(data)
+    data.length() > 0 ? Parser::parse(data) : JSON()
   };
 }
 
