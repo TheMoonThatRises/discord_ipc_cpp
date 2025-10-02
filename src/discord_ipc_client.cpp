@@ -61,10 +61,10 @@ void DiscordIPCClient::recv_thread() {
 
     Payload recv_payload = std::move(*optional_payload);
 
-    std::cout << recv_payload.opcode
-              << ": "
-              << recv_payload.payload.to_string()
-              << std::endl;
+    // std::cout << recv_payload.opcode
+    //           << ": "
+    //           << recv_payload.payload.to_string()
+    //           << std::endl;
 
     switch (recv_payload.opcode) {
       case Opcode::op_ping:
@@ -87,6 +87,8 @@ void DiscordIPCClient::recv_thread() {
 
         break;
       default:
+        std::cout << "Unhandled opcode: " << recv_payload.opcode << std::endl;
+
         break;
     }
   }
