@@ -91,7 +91,7 @@ void DiscordIPCClient::recv_thread() {
     }
   }
 
-  std::cout << "socket connection closed" << std::endl;
+  std::cout << "Socket connection closed" << std::endl;
 }
 
 DiscordIPCClient::DiscordIPCClient(const std::string& client_id)
