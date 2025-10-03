@@ -217,6 +217,18 @@ class DiscordIPCClient {
   bool close();
 
   /**
+   * \brief Checks for successful authentication with socket.
+   *
+   * Returns internal tracking variable that tracks to see if the socket
+   * has successful returned a dispatch response.
+   *
+   * \return Authentication success.
+   *
+   * \see _successful_auth
+   */
+  bool has_successful_auth();
+
+  /**
    * \brief Sets the presence in Discord.
    *
    * Sends a request to set the presence of the connected Discord user with

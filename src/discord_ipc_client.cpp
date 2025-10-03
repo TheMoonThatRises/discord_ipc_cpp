@@ -224,6 +224,10 @@ bool DiscordIPCClient::connect() {
   return true;
 }
 
+bool DiscordIPCClient::has_successful_auth() {
+  return _successful_auth;
+}
+
 bool DiscordIPCClient::close() {
   send_packet({
     .opcode = Opcode::op_close,
