@@ -128,6 +128,7 @@ class DiscordIPCClient {
   * \see discord_ipc_cpp::websockets::SocketClient::send_data
   */
   bool send_packet(const ipc_types::Payload& payload);
+
   /**
    * \brief Receive packet from socket.
    *
