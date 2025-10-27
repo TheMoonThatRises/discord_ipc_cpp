@@ -27,6 +27,7 @@ namespace discord_ipc_cpp::ipc_types {
  * \brief Request and response Op codes.
  */
 enum Opcode : int {
+  op_quit = -1,      ///< Discord app quit
   op_handshake = 0,  ///< Initiate connection
   op_frame = 1,      ///< General socket response
   op_close = 2,      ///< Close connection
