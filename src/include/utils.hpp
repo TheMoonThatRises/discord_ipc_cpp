@@ -1,5 +1,5 @@
 /*
-  Copyright 2025 Peter Duanmu
+  Copyright 2026 Peter Duanmu
 
   You should have received a copy of the GNU General Public License along
   with discord_ipc_cpp. If not, see <https://www.gnu.org/licenses/>.
