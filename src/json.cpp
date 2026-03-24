@@ -72,7 +72,7 @@ std::optional<T> JSON::safe_as() const {
   if (is<T>()) {
     return std::get<T>(_value);
   } else {
-    return T();
+    return std::nullopt;
   }
 }
 
