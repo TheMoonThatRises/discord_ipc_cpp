@@ -5,10 +5,11 @@
   with discord_ipc_cpp. If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include "discord_ipc_cpp/ipc_types.hpp"
+
 #include <string>
 #include <variant>
 
-#include "discord_ipc_cpp/ipc_types.hpp"
 #include "discord_ipc_cpp/json.hpp"
 
 namespace discord_ipc_cpp::ipc_types {

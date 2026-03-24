@@ -5,14 +5,14 @@
   with discord_ipc_cpp. If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include "discord_ipc_cpp/json.hpp"
+
 #include <format>
 #include <string>
 #include <sstream>
 #include <optional>
 #include <variant>
 #include <vector>
-
-#include "discord_ipc_cpp/json.hpp"
 
 #include "include/utils.hpp"
 

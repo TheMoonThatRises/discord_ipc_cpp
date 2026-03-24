@@ -5,6 +5,8 @@
   with discord_ipc_cpp. If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include "discord_ipc_cpp/socket_client.hpp"
+
 #include <poll.h>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -12,8 +14,6 @@
 #include <string>
 #include <optional>
 #include <vector>
-
-#include "discord_ipc_cpp/socket_client.hpp"
 
 namespace discord_ipc_cpp::websockets {
 SocketClient::SocketClient(

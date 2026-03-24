@@ -5,6 +5,8 @@
   with discord_ipc_cpp. If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include "include/utils.hpp"
+
 #include <unistd.h>
 
 #include <map>
@@ -14,7 +16,6 @@
 #include <random>
 #include <regex>
 
-#include "include/utils.hpp"
 #include "include/internal_ipc_types.hpp"
 
 namespace discord_ipc_cpp::utils {

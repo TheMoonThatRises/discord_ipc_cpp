@@ -5,10 +5,10 @@
   with discord_ipc_cpp. If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include "discord_ipc_cpp/parser.hpp"
+
 #include <limits>
 #include <string>
-
-#include "discord_ipc_cpp/parser.hpp"
 
 #include "include/utils.hpp"
 

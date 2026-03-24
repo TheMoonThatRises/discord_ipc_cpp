@@ -5,6 +5,8 @@
   with discord_ipc_cpp. If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include "discord_ipc_cpp/discord_ipc_client.hpp"
+
 #include <unistd.h>
 
 #include <map>
@@ -15,7 +17,6 @@
 #include <utility>
 #include <iostream>
 
-#include "discord_ipc_cpp/discord_ipc_client.hpp"
 #include "discord_ipc_cpp/socket_client.hpp"
 #include "discord_ipc_cpp/json.hpp"
 #include "discord_ipc_cpp/parser.hpp"
