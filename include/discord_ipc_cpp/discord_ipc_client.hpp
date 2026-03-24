@@ -211,11 +211,13 @@ class DiscordIPCClient {
    * setting \ref _stop_recv_thread to \c false. Lastly, the underlying socket
    * is closed.
    *
+   * \param write_close Should send disconnect packet before closing socket.
+   *
    * \return Success of the attempt to close connection.
    *
    * \see discord_ipc_cpp::websockets::SocketClient::close
    */
-  bool close();
+  bool close(bool write_close);
 
   /**
    * \brief Checks for successful authentication with socket.

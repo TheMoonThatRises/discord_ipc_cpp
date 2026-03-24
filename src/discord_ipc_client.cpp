@@ -36,6 +36,8 @@ using discord_ipc_cpp::ipc_types::RichPresence;
 using discord_ipc_cpp::internal_ipc_types::AuthorizationRequest;
 using discord_ipc_cpp::internal_ipc_types::CommandRequest;
 
+using discord_ipc_cpp::utils::find_discord_ipc_file;
+
 std::vector<char> DiscordIPCClient::encode_packet(
   const Payload& payload
 ) {
@@ -52,6 +54,8 @@ std::vector<char> DiscordIPCClient::encode_packet(
 }
 
 void DiscordIPCClient::recv_thread() {
+  _stop_recv_thread = false;
+
   while (!_stop_recv_thread) {
     auto optional_payload = recv_packet();
 
@@ -60,11 +64,6 @@ void DiscordIPCClient::recv_thread() {
     }
 
     Payload recv_payload = std::move(*optional_payload);
-
-    // std::cout << recv_payload.opcode
-    //           << ": "
-    //           << recv_payload.payload.to_string()
-    //           << std::endl;
 
     switch (recv_payload.opcode) {
       case Opcode::op_ping:
@@ -81,9 +80,12 @@ void DiscordIPCClient::recv_thread() {
         }
 
         break;
-      case Opcode::op_handshake:
       case Opcode::op_close:
-        close();
+        close(true);
+
+        break;
+      case Opcode::op_quit:
+        close(false);
 
         break;
       default:
@@ -104,7 +106,7 @@ _stop_recv_thread(false),
 _successful_auth(false) {}
 
 DiscordIPCClient::~DiscordIPCClient() {
-  close();
+  close(true);
 }
 
 bool DiscordIPCClient::send_packet(const Payload& payload) {
@@ -143,9 +145,11 @@ std::optional<Payload> DiscordIPCClient::recv_packet() {
 
   data = std::string(buffer.begin(), buffer.end());
 
+  bool has_data = data.length() > 0;
+
   return Payload {
-    static_cast<Opcode>(opcode),
-    data.length() > 0 ? Parser::parse(data) : JSON()
+    has_data ? static_cast<Opcode>(opcode) : Opcode::op_quit,
+    has_data ? Parser::parse(data) : JSON()
   };
 }
 
@@ -191,7 +195,6 @@ bool DiscordIPCClient::attempt_send_payload(
   return success;
 }
 
-
 bool DiscordIPCClient::connect() {
   bool ret = _socket.connect();
 
@@ -228,13 +231,16 @@ bool DiscordIPCClient::has_successful_auth() {
   return _successful_auth;
 }
 
-bool DiscordIPCClient::close() {
-  send_packet({
-    .opcode = Opcode::op_close,
-    .payload = {}
-  });
+bool DiscordIPCClient::close(bool write_close) {
+  if (write_close) {
+    send_packet({
+      .opcode = Opcode::op_close,
+      .payload = {}
+    });
+  }
 
   _stop_recv_thread = true;
+  _successful_auth = false;
 
   std::this_thread::sleep_for(std::chrono::milliseconds(25));
 
