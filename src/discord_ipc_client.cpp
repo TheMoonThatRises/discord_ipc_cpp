@@ -234,6 +234,8 @@ bool DiscordIPCClient::has_successful_auth() {
 
 bool DiscordIPCClient::close(bool write_close) {
   if (write_close) {
+    set_empty_presence();
+
     send_packet({
       .opcode = Opcode::op_close,
       .payload = {}
