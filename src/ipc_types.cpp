@@ -105,7 +105,7 @@ JSON RichPresence::Secrets::to_json() const {
     base["match"] = JSON(match.value());
   }
 
-  if (join.has_value()) {
+  if (spectate.has_value()) {
     base["spectate"] = JSON(spectate.value());
   }
 

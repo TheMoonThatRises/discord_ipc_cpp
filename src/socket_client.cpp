@@ -11,6 +11,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include <cstring>
 #include <string>
 #include <optional>
 #include <vector>
@@ -52,7 +53,7 @@ bool SocketClient::connect() {
 }
 
 bool SocketClient::close() {
-  if (_client_socket > 0) {
+  if (_client_socket >= 0) {
     ::close(_client_socket);
 
     _client_socket = -1;

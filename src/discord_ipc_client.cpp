@@ -9,6 +9,7 @@
 
 #include <unistd.h>
 
+#include <cstring>
 #include <map>
 #include <thread>
 #include <string>
@@ -125,7 +126,7 @@ bool DiscordIPCClient::send_packet(const Payload& payload) {
 std::optional<Payload> DiscordIPCClient::recv_packet() {
   int opcode, data_len;
   std::string data;
-  std::vector<char> opcode_buffer(4), data_len_buffer(4), buffer;
+  std::vector<char> opcode_buffer, data_len_buffer, buffer;
 
   auto poll_buffer = _socket.recv_data(4, 1000);
 
@@ -139,8 +140,6 @@ std::optional<Payload> DiscordIPCClient::recv_packet() {
 
   std::memcpy(&opcode, opcode_buffer.data(), opcode_buffer.size());
   std::memcpy(&data_len, data_len_buffer.data(), data_len_buffer.size());
-
-  buffer.resize(data_len);
 
   buffer = std::move(*_socket.recv_data(data_len));
 
