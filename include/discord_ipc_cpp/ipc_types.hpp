@@ -71,11 +71,11 @@ struct RichPresence {
     /**
      * \brief Optional start time of the presence in seconds.
      */
-    std::optional<int> start;
+    std::optional<int64_t> start;
     /**
      * \brief Optional end time of the presence in seconds.
      */
-    std::optional<int> end;
+    std::optional<int64_t> end;
 
    private:
     /**
