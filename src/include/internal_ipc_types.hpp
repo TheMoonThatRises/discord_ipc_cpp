@@ -93,6 +93,7 @@ struct CommandRequest {
   };
 
  public:
+  // cppcheck-suppress uninitMemberVarNoCtor
   const CommandType cmd;
   const std::optional<std::string> nonce;
   const std::optional<std::map<std::string, RequestArgs>> args;
