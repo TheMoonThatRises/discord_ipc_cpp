@@ -18,8 +18,20 @@
 
 namespace discord_ipc_cpp::websockets {
 SocketClient::SocketClient(
-  const std::string& socket_file)
-: _socket_file(socket_file) {
+  const std::string& socket_file) :
+_socket_file(socket_file),
+_client_socket(-1) {
+}
+
+SocketClient::~SocketClient() {
+  close();
+}
+
+bool SocketClient::connect() {
+  if (_client_socket >= 0) {
+    close();
+  }
+
   int opt = 1;
 
   _client_socket = ::socket(AF_UNIX, SOCK_STREAM, 0);
@@ -34,13 +46,7 @@ SocketClient::SocketClient(
 
   _fds[0].fd = _client_socket;
   _fds[0].events = POLLIN;
-}
 
-SocketClient::~SocketClient() {
-  close();
-}
-
-bool SocketClient::connect() {
   if (_client_socket < 0) {
     return false;
   }
