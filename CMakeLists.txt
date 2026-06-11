@@ -29,4 +29,12 @@ target_include_directories(discord_ipc_cpp
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_compile_options(discord_ipc_cpp PRIVATE -Wall -Wextra -O3 -pthread)
+target_compile_options(discord_ipc_cpp PRIVATE
+  -Wall
+  -Wextra
+
+  -O3
+  -pthread
+  -flto
+  -fvisibility=hidden
+)
