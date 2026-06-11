@@ -83,8 +83,8 @@ std::string generate_uuid() {
       uuid += '-';
     }
 
-    uuid += _valid_chars[generate_random_num(0, 15)];
-    uuid += _valid_chars[generate_random_num(0, 15)];
+    uuid += _valid_chars[generate_random_num(0, 16)];
+    uuid += _valid_chars[generate_random_num(0, 16)];
   }
 
   return uuid;
