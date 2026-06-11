@@ -91,13 +91,9 @@ void DiscordIPCClient::recv_thread() {
 
         break;
       default:
-        std::cout << "Unhandled opcode: " << recv_payload.opcode << std::endl;
-
         break;
     }
   }
-
-  std::cout << "Socket connection closed" << std::endl;
 }
 
 DiscordIPCClient::DiscordIPCClient(const std::string& client_id)
@@ -242,11 +238,21 @@ bool DiscordIPCClient::close(bool write_close) {
   }
 
   _stop_recv_thread = true;
+
+  int res = _socket.close();
+
   _successful_auth = false;
 
   std::this_thread::sleep_for(std::chrono::milliseconds(25));
 
-  return _socket.close();
+  if (
+    _socket_recv_thread.joinable() &&
+    std::this_thread::get_id() != _socket_recv_thread.get_id()
+  ) {
+    _socket_recv_thread.join();
+  }
+
+  return res;
 }
 
 bool DiscordIPCClient::set_presence(const ipc_types::RichPresence& presence) {
