@@ -9,6 +9,7 @@
 
 #include <unistd.h>
 
+#include <cstdio>
 #include <map>
 #include <string>
 #include <optional>
