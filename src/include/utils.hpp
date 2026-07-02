@@ -14,8 +14,6 @@
 #include <vector>
 
 namespace discord_ipc_cpp::utils {
-extern const std::map<std::string, std::string> _escape_key;
-
 std::string find_discord_ipc_file();
 
 std::string unescape_string(const std::string& input);

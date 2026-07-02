@@ -14,17 +14,12 @@
 #include <optional>
 #include <vector>
 #include <random>
-#include <regex>
 
 #include "include/internal_ipc_types.hpp"
 
 namespace discord_ipc_cpp::utils {
 using CommandType = internal_ipc_types::CommandRequest::CommandType;
 using EventType = internal_ipc_types::CommandRequest::EventType;
-
-const std::map<std::string, std::string> _escape_key {
-  {"\\\"", "\""}
-};
 
 std::string find_discord_ipc_file() {
   std::string user_tmp_dir = std::getenv("TMPDIR");
@@ -41,24 +36,117 @@ std::string find_discord_ipc_file() {
   return "";
 }
 
-std::string unescape_string(const std::string& input) {
-  std::string output = input;
+std::string escape_string(const std::string& input) {
+  std::string out;
+  out.reserve(input.size() + 16);
 
-  for (const auto& [key, value] : _escape_key) {
-    output = std::regex_replace(output, std::regex(key), value);
+  for (unsigned char c : input) {
+    switch (c) {
+      case '"':
+        out += "\\\"";
+        break;
+      case '\\':
+        out += "\\\\";
+        break;
+      case '\b':
+        out += "\\b";
+        break;
+      case '\f':
+        out += "\\f";
+        break;
+      case '\n':
+        out += "\\n";
+        break;
+      case '\r':
+        out += "\\r";
+        break;
+      case '\t':
+        out += "\\t";
+        break;
+      default:
+        if (c < 0x20) {
+          char buf[7];
+          std::snprintf(buf, sizeof(buf), "\\u%04x", c);
+          out += buf;
+        } else {
+          out += static_cast<char>(c);
+        }
+    }
   }
 
-  return output;
+  return out;
 }
 
-std::string escape_string(const std::string& input) {
-  std::string output = input;
+std::string unescape_string(const std::string& input) {
+  std::string out;
+  out.reserve(input.size());
 
-  for (const auto& [key, value] : _escape_key) {
-    output = std::regex_replace(output, std::regex(value), key);
+  for (size_t i = 0; i < input.size(); ++i) {
+    char c = input[i];
+
+    if (c != '\\') {
+      out += c;
+      continue;
+    }
+
+    if (++i >= input.size()) {
+      out += '\\';
+      break;
+    }  // trailing backslash
+
+    switch (input[i]) {
+      case '"':
+        out += '"';
+        break;
+      case '\\':
+        out += '\\';
+        break;
+      case '/':
+        out += '/';
+        break;
+      case 'b':
+        out += '\b';
+        break;
+      case 'f':
+        out += '\f';
+        break;
+      case 'n':
+        out += '\n';
+        break;
+      case 'r':
+        out += '\r';
+        break;
+      case 't':
+        out += '\t';
+        break;
+      case 'u': {
+        // \uXXXX — 4 hex digits follow
+        if (i + 4 < input.size()) {
+          int cp = std::stoi(input.substr(i + 1, 4), nullptr, 16);
+
+          i += 4;
+          // NOTE: this only handles the basic case; see caveat below
+          if (cp < 0x80) {
+            out += static_cast<char>(cp);
+          } else if (cp < 0x800) {
+            out += static_cast<char>(0xC0 | (cp >> 6));
+            out += static_cast<char>(0x80 | (cp & 0x3F));
+          } else {
+            out += static_cast<char>(0xE0 | (cp >> 12));
+            out += static_cast<char>(0x80 | ((cp >> 6) & 0x3F));
+            out += static_cast<char>(0x80 | (cp & 0x3F));
+          }
+        }
+
+        break;
+      }
+      default:
+        out += input[i];
+        break;  // unknown escape, pass through
+    }
   }
 
-  return output;
+  return out;
 }
 
 template<typename T>
