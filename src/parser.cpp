@@ -171,7 +171,7 @@ JSON Parser::parse_number() {
     try {
       return JSON(stoi(number));
     } catch (const std::out_of_range&) {
-      return JSON(stoll(number));
+      return JSON(static_cast<JSONLong>(stoll(number)));
     }
   }
 }
