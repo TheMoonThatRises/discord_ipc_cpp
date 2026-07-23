@@ -14,16 +14,22 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            cxx: clang++
+          - os: ubuntu-latest
+            cxx: g++
+
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install CMake
-        run: brew install cmake
-
       - name: Build project
         uses: threeal/cmake-action@v2.1.0
         with:
-          cxx-compiler: clang++
+          cxx-compiler: ${{ matrix.cxx }}
