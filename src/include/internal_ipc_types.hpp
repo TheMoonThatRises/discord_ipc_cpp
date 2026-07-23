@@ -95,10 +95,10 @@ struct CommandRequest {
  public:
   // cppcheck-suppress uninitMemberVarNoCtor
   const CommandType cmd;
-  const std::optional<std::string> nonce;
-  const std::optional<std::map<std::string, RequestArgs>> args;
-  const std::optional<json::JSON> data;
-  const std::optional<EventType> evt;
+  const std::optional<std::string> nonce { std::nullopt };
+  const std::optional<std::map<std::string, RequestArgs>> args { std::nullopt };
+  const std::optional<json::JSON> data { std::nullopt };
+  const std::optional<EventType> evt { std::nullopt };
 
  public:
   /**

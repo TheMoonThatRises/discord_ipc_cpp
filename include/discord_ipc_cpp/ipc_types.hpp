@@ -71,11 +71,11 @@ struct RichPresence {
     /**
      * \brief Optional start time of the presence in seconds.
      */
-    std::optional<int64_t> start;
+    std::optional<int64_t> start { std::nullopt };
     /**
      * \brief Optional end time of the presence in seconds.
      */
-    std::optional<int64_t> end;
+    std::optional<int64_t> end { std::nullopt };
 
    private:
     /**
@@ -101,11 +101,11 @@ struct RichPresence {
     /**
      * \brief ID of the emoji.
      */
-    std::optional<std::string> snowflake;
+    std::optional<std::string> snowflake { std::nullopt };
     /**
      * \brief If emoji is animated.
      */
-    std::optional<bool> animated;
+    std::optional<bool> animated { std::nullopt };
 
    private:
     /**
@@ -127,14 +127,14 @@ struct RichPresence {
     /**
      * \brief ID of the party.
      */
-    std::optional<std::string> id;
+    std::optional<std::string> id { std::nullopt };
     /**
      * \brief Current and maximum size.
      *
      * The zeroth index represents the party's current size, while the first
      * index represents the party's maximum size.
      */
-    std::optional<std::vector<int>> size;
+    std::optional<std::vector<int>> size { std::nullopt };
 
    private:
     /**
@@ -156,27 +156,27 @@ struct RichPresence {
     /**
      * \brief Large image of the presence.
      */
-    std::optional<std::string> large_image;
+    std::optional<std::string> large_image { std::nullopt };
     /**
      * \brief Text on hover of large image of the presence.
      */
-    std::optional<std::string> large_text;
+    std::optional<std::string> large_text { std::nullopt };
     /**
      * \brief URL for large image of the presence.
      */
-    std::optional<std::string> large_url;
+    std::optional<std::string> large_url { std::nullopt };
     /**
      * \brief Small image of the presence.
      */
-    std::optional<std::string> small_image;
+    std::optional<std::string> small_image { std::nullopt };
     /**
      * \brief Text on hover of small image of the presence.
      */
-    std::optional<std::string> small_text;
+    std::optional<std::string> small_text { std::nullopt };
     /**
      * \brief URL for small image of the presence.
      */
-    std::optional<std::string> small_url;
+    std::optional<std::string> small_url { std::nullopt };
 
    private:
     /**
@@ -198,15 +198,15 @@ struct RichPresence {
     /**
      * \brief Secret for joining party.
      */
-    std::optional<std::string> join;
+    std::optional<std::string> join { std::nullopt };
     /**
      * \brief Secret for specific instanced match.
      */
-    std::optional<std::string> match;
+    std::optional<std::string> match { std::nullopt };
     /**
      * \brief Secret for spectating game.
      */
-    std::optional<std::string> spectate;
+    std::optional<std::string> spectate { std::nullopt };
 
    private:
     /**
@@ -276,11 +276,11 @@ struct RichPresence {
   /**
     * \brief Name of the presence.
     */
-  std::string name {};
+  std::string name;
   /**
     * \brief Type of the activity.
     */
-  ActivityType type {};
+  ActivityType type;
   /**
     * \brief Stream URL.
     *
