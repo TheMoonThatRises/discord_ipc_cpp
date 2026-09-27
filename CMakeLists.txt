@@ -15,7 +15,7 @@ add_library(discord_ipc_cpp STATIC
 )
 
 set_target_properties(discord_ipc_cpp PROPERTIES
-  CXX_STANDARD 20
+  CXX_STANDARD 26
   CXX_STANDARD_REQUIRED ON
 )
 
