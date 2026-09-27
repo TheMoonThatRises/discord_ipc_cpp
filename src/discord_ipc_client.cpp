@@ -17,6 +17,7 @@
 #include <vector>
 #include <utility>
 #include <iostream>
+#include <functional>
 
 #include "discord_ipc_cpp/socket_client.hpp"
 #include "discord_ipc_cpp/json.hpp"
@@ -55,10 +56,8 @@ std::vector<char> DiscordIPCClient::encode_packet(
   return packet;
 }
 
-void DiscordIPCClient::recv_thread() {
-  _stop_recv_thread = false;
-
-  while (!_stop_recv_thread) {
+void DiscordIPCClient::recv_thread(std::stop_token stop_token) {
+  while (!stop_token.stop_requested()) {
     auto optional_payload = recv_packet();
 
     if (!optional_payload.has_value()) {
@@ -85,11 +84,11 @@ void DiscordIPCClient::recv_thread() {
       case Opcode::op_close:
         close(true);
 
-        break;
+        return;
       case Opcode::op_quit:
         close(false);
 
-        break;
+        return;
       default:
         break;
     }
@@ -100,7 +99,6 @@ DiscordIPCClient::DiscordIPCClient(const std::string& client_id)
 : _pid(getpid()),
 _client_id(client_id),
 _socket(utils::find_discord_ipc_file()),
-_stop_recv_thread(false),
 _successful_auth(false) {}
 
 DiscordIPCClient::~DiscordIPCClient() {
@@ -134,8 +132,8 @@ std::optional<Payload> DiscordIPCClient::recv_packet() {
 
   data_len_buffer = std::move(*_socket.recv_data(4));
 
-  std::memcpy(&opcode, opcode_buffer.data(), opcode_buffer.size());
-  std::memcpy(&data_len, data_len_buffer.data(), data_len_buffer.size());
+  std::memcpy(&opcode, opcode_buffer.data(), sizeof(opcode));
+  std::memcpy(&data_len, data_len_buffer.data(), sizeof(data_len));
 
   buffer = std::move(*_socket.recv_data(data_len));
 
@@ -210,15 +208,8 @@ bool DiscordIPCClient::connect() {
     return false;
   }
 
-  _socket_recv_thread = std::thread { &DiscordIPCClient::recv_thread, this };
-
-  struct sched_param sch_params;
-  sch_params.sched_priority = 0;
-
-  pthread_setschedparam(
-    _socket_recv_thread.native_handle(), SCHED_OTHER, &sch_params);
-
-  _socket_recv_thread.detach();
+  _socket_recv_thread = std::jthread(
+    std::bind_front(&DiscordIPCClient::recv_thread, this));
 
   return true;
 }
@@ -237,7 +228,7 @@ bool DiscordIPCClient::close(bool write_close) {
     });
   }
 
-  _stop_recv_thread = true;
+  _socket_recv_thread.request_stop();
 
   int res = _socket.close();
 

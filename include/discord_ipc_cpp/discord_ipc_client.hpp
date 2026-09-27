@@ -67,18 +67,8 @@ class DiscordIPCClient {
    *
    * \see recv_thread
    */
-  std::thread _socket_recv_thread;
+  std::jthread _socket_recv_thread;
 
-  /**
-   * \brief Controls the state of \ref _socket_recv_thread.
-   *
-   * When this variable is toggled from \c false to \c true,
-   * \ref _socket_recv_thread will receive the notice to terminate the \c while
-   * loop.
-   *
-   * \see recv_thread()
-   */
-  std::atomic_bool _stop_recv_thread;
   /**
    * \brief Indicates successful authentication with Discord socket.
    *
@@ -108,8 +98,10 @@ class DiscordIPCClient {
    * The longevity of the function is controlled by the variable
    * \ref _stop_recv_thread, which is the boolean checker within the \c while
    * statement.
+   *
+   * \param stop_token Token to stop the receiver thread.
    */
-  void recv_thread();
+  void recv_thread(std::stop_token stop_token);
 
  protected:
  /**
