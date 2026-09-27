@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.25)
 project(discord_ipc_cpp
   VERSION 1.0.0
   DESCRIPTION "C++ library for interfacing with Discord IPC socket"
